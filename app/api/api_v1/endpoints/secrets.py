@@ -4,7 +4,7 @@ from secrets import token_urlsafe
 from fastapi import APIRouter, HTTPException, Depends, Body
 from redis.asyncio import Redis
 
-from app.core.sercurity import get_hash, verify, encrypt, decrypt
+from app.core.sercurity import get_hash, verify
 from app.api import deps
 
 router = APIRouter()
@@ -22,7 +22,7 @@ async def generate_secret_key(
         secret_key,
         mapping={
             "secret_phrase": await get_hash(secret_phrase),
-            "content": await encrypt(content, secret_key),
+            "content": content,
         },
     ).execute()
     return {"secret_key": secret_key}
@@ -42,4 +42,4 @@ async def read_secret(
             detail="Wrong catchphrase."
         )
     await db.delete(secret_key)
-    return {"content": await decrypt(db_secret[0]["content"], secret_key)}
+    return {"content": db_secret[0]["content"]}
