@@ -12,9 +12,9 @@ router = APIRouter()
 
 @router.post("/generate")
 async def generate_secret_key(
-    db: Redis = Depends(deps.get_db),
     content: str = Body(...),
     secret_phrase: str = Body(...),
+    db: Redis = Depends(deps.get_db),
 ) -> Any:
     """Create secret key for accessing secret"""
     secret_key = token_urlsafe(16)
@@ -31,7 +31,7 @@ async def generate_secret_key(
 @router.post("/secrets/{secret_key}")
 async def read_secret(
     secret_key: str,
-    secret_phrase: str = Body(...),
+    secret_phrase: str = Body(embed=True),
     db: Redis = Depends(deps.get_db),
 ) -> Any:
     """Read secret with secret phrase and secret key given on create"""

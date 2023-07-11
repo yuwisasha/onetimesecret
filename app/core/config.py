@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import RedisDsn, validator
+from pydantic import RedisDsn, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     REDIS_DATABASE_URI: RedisDsn | None = None
 
-    @validator("REDIS_DATABASE_URI", pre=True)
+    @field_validator("REDIS_DATABASE_URI", mode="before")
     def assemble_db_connection(
         cls, v: str | None, values: dict[str, str]
     ) -> Any:
